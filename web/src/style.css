@@ -1,0 +1,74 @@
+/* ebru
+ *
+ * A workshop in walnut and brass around a bath of ink. The wood recedes; the
+ * only colour is in the ink. Castoro, in italic, for names and for what the
+ * tray says; Schibsted Grotesk for the tools.
+ */
+
+:root {
+  --walnut: #23170f;
+  --walnut-light: #342318;
+  --grain: #2b1d14;
+  --brass: #c7a36a;
+  --brass-dim: rgb(199 163 106 / 0.45);
+  --bone: #efe6d8;
+  --bone-dim: rgb(239 230 216 / 0.62);
+  --bone-faint: rgb(239 230 216 / 0.34);
+  --line: rgb(239 230 216 / 0.12);
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* The wood is painted once, on the root, fixed to the viewport, so long
+   pages scroll over one continuous board. */
+html {
+  min-height: 100%;
+  background-color: var(--walnut);
+  background-image:
+    repeating-linear-gradient(92deg, transparent 0 11px, rgb(0 0 0 / 0.05) 11px 12px, transparent 12px 31px),
+    repeating-linear-gradient(88deg, transparent 0 57px, rgb(255 255 255 / 0.018) 57px 60px, transparent 60px 140px),
+    radial-gradient(120% 90% at 50% 30%, var(--walnut-light), var(--walnut) 70%);
+  background-attachment: fixed;
+}
+
+body {
+  margin: 0;
+  color: var(--bone);
+  font-family: 'Schibsted Grotesk', system-ui, sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
+}
+
+.name {
+  font-family: 'Castoro', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
