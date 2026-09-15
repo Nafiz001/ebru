@@ -1,0 +1,29 @@
+[package]
+name = "ebru-server"
+version = "0.1.0"
+description = "The shared marbling tray: ops over WebSockets, prints pulled into a gallery"
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[[bin]]
+name = "ebru"
+path = "src/main.rs"
+
+[dependencies]
+marbling = { workspace = true, features = ["serde"] }
+serde.workspace = true
+serde_json.workspace = true
+axum = { version = "0.8.9", features = ["ws"] }
+tokio = { version = "1.53", features = ["rt-multi-thread", "macros", "sync", "time", "net", "signal", "fs"] }
+tower-http = { version = "0.7.1", features = ["fs", "compression-gzip", "trace", "set-header"] }
+tiny-skia = { version = "0.12", default-features = false, features = ["std", "simd", "png-format"] }
+rusqlite = { version = "0.40", features = ["bundled"] }
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt"] }
+
+[dev-dependencies]
+tokio-tungstenite = "0.30"
+tower = { version = "0.5", features = ["util"] }
+http-body-util = "0.1"
