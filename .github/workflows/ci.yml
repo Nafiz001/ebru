@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --release -- -D warnings
+
+      # The marbling maths, the bot's compositions, printing, and the whole
+      # server driven over real WebSockets.
+      - name: Test
+        run: cargo test --workspace --release
+
+      - name: Build the tray for the browser
+        run: cargo build -p ebru-wasm --target wasm32-unknown-unknown --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ebru-wasm
+          path: target/wasm32-unknown-unknown/release/ebru_wasm.wasm
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Every browser runs its own copy of the tray and trusts it to agree with
+      # the server's to the bit. Replay a real print both ways and compare
+      # after every op.
+      - name: Native and WebAssembly agree
+        run: |
+          cp target/wasm32-unknown-unknown/release/ebru_wasm.wasm web/public/ebru.wasm
+          node web/scripts/determinism.mjs
+
+  web:
+    needs: rust
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ebru-wasm
+          path: web/public
+
+      - run: mv public/ebru_wasm.wasm public/ebru.wasm
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+
+      - name: Check
+        run: npm run check
+
+      - name: Build
+        run: npm run build
