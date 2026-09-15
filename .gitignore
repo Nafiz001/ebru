@@ -1,0 +1,17 @@
+# rust
+target/
+
+# the tray's prints, recipes and gallery database
+data/
+
+# web (see also web/.gitignore)
+web/node_modules/
+web/dist/
+# built from crates/wasm by `npm run wasm`
+web/public/ebru.wasm
+
+.vs/
+.vscode/
+.idea/
+.env
+.DS_Store
